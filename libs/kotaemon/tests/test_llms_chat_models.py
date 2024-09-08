@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from kotaemon.base.schema import AIMessage, HumanMessage, LLMInterface, SystemMessage
-from kotaemon.llms import AzureChatOpenAI, LlamaCppChat
+from kotaemon.llms import AzureChatOpenAI, LCChatGemini, LlamaCppChat
 
 try:
     pass
@@ -13,7 +13,10 @@ except ImportError:
 
 from openai.types.chat.chat_completion import ChatCompletion
 
-from .conftest import skip_llama_cpp_not_installed
+from .conftest import (
+    skip_langchain_google_genai_not_installed,
+    skip_llama_cpp_not_installed,
+)
 
 _openai_chat_completion_response = ChatCompletion.parse_obj(
     {
@@ -71,6 +74,38 @@ def test_azureopenai_model(openai_completion):
         output, LLMInterface
     ), "Output for single text is not LLMInterface"
     openai_completion.assert_called()
+
+
+@skip_langchain_google_genai_not_installed
+@patch(
+    "langchain_google_genai.ChatGoogleGenerativeAI",
+    side_effect=lambda *args, **kwargs: _openai_chat_completion_response,
+)
+def test_gemini_model(gemini_completion):
+    model = LCChatGemini(
+        google_api_key="dummy",
+        model="models/gemini-1.5-flash",
+    )
+    # test for str input - stream mode
+    output = model("hello world")
+    assert isinstance(
+        output, LLMInterface
+    ), "Output for single text is not LLMInterface"
+    gemini_completion.assert_called()
+
+    # test for list[message] input - stream mode
+    messages = [
+        SystemMessage(content="You are a philosohper"),
+        HumanMessage(content="What is the meaning of life"),
+        AIMessage(content="42"),
+        HumanMessage(content="What is the meaning of 42"),
+    ]
+
+    output = model(messages)
+    assert isinstance(
+        output, LLMInterface
+    ), "Output for single text is not LLMInterface"
+    gemini_completion.assert_called()
 
 
 @skip_llama_cpp_not_installed

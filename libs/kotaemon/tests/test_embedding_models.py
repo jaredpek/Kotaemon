@@ -9,11 +9,13 @@ from kotaemon.embeddings import (
     AzureOpenAIEmbeddings,
     FastEmbedEmbeddings,
     LCCohereEmbeddings,
+    LCGeminiEmbeddings,
     LCHuggingFaceEmbeddings,
     OpenAIEmbeddings,
 )
 
 from .conftest import (
+    skip_langchain_google_genai_not_installed,
     skip_when_fastembed_not_installed,
     skip_when_sentence_bert_not_installed,
 )
@@ -141,6 +143,23 @@ def test_lccohere_embeddings(langchain_cohere_embedding_call):
         model="embed-english-light-v2.0",
         cohere_api_key="my-api-key",
         user_agent="test",
+    )
+
+    output = model("Hello World")
+    assert_embedding_result(output)
+    langchain_cohere_embedding_call.assert_called()
+
+
+@skip_langchain_google_genai_not_installed
+@patch(
+    "langchain_google_genai.GoogleGenerativeAIEmbeddings.embed_documents",
+    side_effect=lambda *args, **kwargs: [[1.0, 2.1, 3.2]],
+)
+def test_lcgemini_embeddings(langchain_cohere_embedding_call):
+    model = LCGeminiEmbeddings(
+        model="models/text-embedding-004",
+        google_api_key="my-api-key",
+        task_type="retrieval_document",
     )
 
     output = model("Hello World")

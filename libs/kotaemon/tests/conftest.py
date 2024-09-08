@@ -60,6 +60,15 @@ def if_llama_cpp_not_installed():
         return False
 
 
+def if_langchain_google_genai_not_installed():
+    try:
+        import langchain_google_genai  # noqa: F401
+    except ImportError:
+        return True
+    else:
+        return False
+
+
 skip_when_haystack_not_installed = pytest.mark.skipif(
     if_haystack_not_installed(), reason="Haystack is not installed"
 )
@@ -82,4 +91,9 @@ skip_openai_lc_wrapper_test = pytest.mark.skipif(
 
 skip_llama_cpp_not_installed = pytest.mark.skipif(
     if_llama_cpp_not_installed(), reason="llama_cpp is not installed"
+)
+
+skip_langchain_google_genai_not_installed = pytest.mark.skipif(
+    if_langchain_google_genai_not_installed(),
+    reason="langchain_google_genai is not installed",
 )
