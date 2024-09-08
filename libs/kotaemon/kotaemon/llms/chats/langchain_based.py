@@ -4,6 +4,7 @@ import logging
 from typing import AsyncGenerator, Iterator
 
 from kotaemon.base import BaseMessage, HumanMessage, LLMInterface
+from kotaemon.platforms.gemini import BaseGeminiChatModel
 
 from .base import ChatLLM
 
@@ -247,18 +248,23 @@ class LCAnthropicChat(LCChatMixin, ChatLLM):  # type: ignore
         return ChatAnthropic
 
 
-class LCGeminiChat(LCChatMixin, ChatLLM):  # type: ignore
+class LCChatGemini(LCChatMixin, ChatLLM, BaseGeminiChatModel):  # type: ignore
+    """Gemini Chat Model
+
+    https://python.langchain.com/v0.2/api_reference/google_genai/chat_models/langchain_google_genai.chat_models.ChatGoogleGenerativeAI.html
+    """
+
     def __init__(
         self,
-        api_key: str | None = None,
-        model_name: str | None = None,
+        google_api_key: str | None = None,
+        model: str | None = None,
         temperature: float = 0.7,
         **params,
     ):
         super().__init__(
-            google_api_key=api_key,
-            model=model_name,
-            temperature=temperature,
+            google_api_key=google_api_key or self.google_api_key,
+            model=model or self.model,
+            temperature=temperature or self.temperature,
             **params,
         )
 
