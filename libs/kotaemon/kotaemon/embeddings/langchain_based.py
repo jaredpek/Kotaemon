@@ -1,6 +1,7 @@
 from typing import Optional
 
 from kotaemon.base import Document, DocumentWithEmbedding
+from kotaemon.platforms.gemini import BaseGeminiEmbeddingModel
 
 from .base import BaseEmbeddings
 
@@ -185,6 +186,35 @@ class LCCohereEmbeddings(LCEmbeddingMixin, BaseEmbeddings):
             from langchain.embeddings import CohereEmbeddings
 
         return CohereEmbeddings
+
+
+class LCGeminiEmbeddings(LCEmbeddingMixin, BaseEmbeddings, BaseGeminiEmbeddingModel):
+    """Wrapper around Langchain's Gemini embedding, focusing on key parameters
+
+    https://python.langchain.com/v0.2/api_reference/google_genai/embeddings/langchain_google_genai.embeddings.GoogleGenerativeAIEmbeddings.html
+    """
+
+    def __init__(
+        self,
+        model: Optional[str] = None,
+        google_api_key: Optional[str] = None,
+        task_type: Optional[str] = None,
+        **params,
+    ):
+        super().__init__(
+            model=model or self.model,
+            google_api_key=google_api_key or self.google_api_key,
+            task_type=task_type or self.task_type,
+            **params,
+        )
+
+    def _get_lc_class(self):
+        try:
+            from langchain_google_genai import GoogleGenerativeAIEmbeddings
+        except ImportError:
+            raise ImportError("Please install langchain-google-genai")
+
+        return GoogleGenerativeAIEmbeddings
 
 
 class LCHuggingFaceEmbeddings(LCEmbeddingMixin, BaseEmbeddings):

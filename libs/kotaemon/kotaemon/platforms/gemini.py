@@ -19,6 +19,20 @@ class BaseGeminiModel:
     google_api_key: str = Param("", help="The API key received from Gemini.")
 
 
+class BaseGeminiEmbeddingModel(BaseGeminiModel):
+    model: str = get_model("embedding")
+
+    task_type: str = Param(
+        "retrieval_document",
+        help=(
+            "The valid task type for embedding, "
+            "choices are 'retrieval_document' (default), 'retrieval_query', "
+            "'semantic_similarity', 'classification' 'clustering' and "
+            "'task_type_unspecified'."
+        ),
+    )
+
+
 class BaseGeminiChatModel(BaseGeminiModel):
     model: str = get_model("chat")
 

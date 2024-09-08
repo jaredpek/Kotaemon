@@ -215,6 +215,16 @@ KH_EMBEDDINGS["cohere"] = {
     "default": False,
 }
 
+KH_EMBEDDINGS["gemini"] = {
+    "spec": {
+        "__type__": "kotaemon.embeddings.LCGeminiEmbeddings",
+        "model": "models/text-embedding-004",
+        "google_api_key": "your-key",
+        "task_type": "retrieval_document",
+    },
+    "default": False,
+}
+
 # KH_EMBEDDINGS["huggingface"] = {
 #     "spec": {
 #         "__type__": "kotaemon.embeddings.LCHuggingFaceEmbeddings",
