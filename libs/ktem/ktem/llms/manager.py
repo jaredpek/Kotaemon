@@ -58,7 +58,7 @@ class LLMManager:
             AzureChatOpenAI,
             ChatOpenAI,
             LCAnthropicChat,
-            LCGeminiChat,
+            LCChatGemini,
             LlamaCppChat,
         )
 
@@ -66,7 +66,7 @@ class LLMManager:
             ChatOpenAI,
             AzureChatOpenAI,
             LCAnthropicChat,
-            LCGeminiChat,
+            LCChatGemini,
             LlamaCppChat,
         ]
 
