@@ -1,6 +1,7 @@
 .github/
 .git/
 .mypy_cache/
+.theflow/
 __pycache__/
 ktem_app_data/
 env/
@@ -11,3 +12,4 @@ env/
 README.md
 *.zip
 *.sh
+venv*
